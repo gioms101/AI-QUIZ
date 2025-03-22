@@ -9,12 +9,15 @@ class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
 
 
+class PossibleAnswer(models.Model):
+    name = models.CharField(max_length=100)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name="possible_answers")
+
+
 class Answer(models.Model):
     name = models.CharField(max_length=300)  # User Answer
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="answers")
-
-    # In case user demands to generate quiz by possible answers this field is filled otherwise it's null.
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class QuizTopic(models.Model):
