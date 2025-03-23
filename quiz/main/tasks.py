@@ -1,5 +1,5 @@
 from celery import shared_task
-from .models import QuizTopic
+from .models import QuizTopic, Question, Answer
 
 
 @shared_task
@@ -11,3 +11,9 @@ def count_topics(topic_name):
         obj.save(update_fields=["asked"])
     else:
         QuizTopic.objects.create(name=topic_name)
+
+
+@shared_task
+def delete_generated_quiz(user_id):
+    Question.objects.filter(user_id=user_id).delete()
+    Answer.objects.filter(user_id=user_id).delete()

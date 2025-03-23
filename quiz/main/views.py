@@ -1,11 +1,13 @@
+from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Question, Answer, PossibleAnswer
-from .serializers import GenerateQuizSerializer, RetrieveQuestionSerializer
+from .models import Question, PossibleAnswer, QuizTopic
+from .serializers import GenerateQuizSerializer, RetrieveQuestionSerializer, SaveAnswerSerializer, \
+    PopularQuizTopicSerializer
 from .utils import QuizGenerator
-from .tasks import count_topics
+from .tasks import count_topics, delete_generated_quiz
 from .permissions import ValidToGenerateQuiz
 import ast
 
@@ -83,3 +85,68 @@ class RetrieveQuestionAPIView(GenericAPIView):
             serializer = self.get_serializer(quest_obj)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"Message": "End of Quiz"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class SaveUserAnswerAPIView(CreateAPIView):
+    """
+    API Endpoint which saves user answer to the database.
+    """
+    serializer_class = SaveAnswerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ComputeQuizResult(GenericAPIView):
+    """
+    API endpoint to compute and return quiz results for an authenticated user.
+
+    This endpoint processes a user's quiz questions and answers, computes the result
+    using QuizGenerator, and returns the generated result. After successful computation,
+    it triggers an asynchronous task to delete the user's generated quiz data.
+
+
+    URL Pattern:
+    POST /compute_quiz/
+
+    Request Body:
+        None required - uses authenticated user's existing questions and answers
+
+    Returns:
+        200 OK: Computed quiz results
+        400 Bad Request: When result computation fails
+
+    Raises:
+        ValueError: If generated result cannot be parsed
+        Exception: For other processing errors
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = User.objects.prefetch_related("questions", "answers").get(id=request.user.id)
+        user_questions, user_answers = ([
+                                        quest.name for quest in user.questions.all()
+                                        ],
+                                        [
+                                        answer.name for answer in user.answers.all()
+                                        ])
+        generated_result = QuizGenerator.compute_quiz_result(user_questions, user_answers)
+        try:
+            generated_result = ast.literal_eval(generated_result)
+            if generated_result:
+                delete_generated_quiz.delay(user.id)
+                return Response(generated_result, status=status.HTTP_200_OK)
+        except Exception as e:
+            Response(f"Something went wrong! {e}", status=status.HTTP_400_BAD_REQUEST)
+
+
+class PopularQuizTopics(ListAPIView):
+    """
+    API endpoint to retrieve the top 5 most popular quiz topics.
+
+    This endpoint returns a list of quiz topics ordered by popularity (number of times asked),
+    limited to the top 5. It uses ListAPIView to provide standard list retrieval functionality.
+    """
+    queryset = QuizTopic.objects.all().order_by("-asked")[:5]
+    serializer_class = PopularQuizTopicSerializer

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Question
+from .models import Question, Answer, QuizTopic
 
 
 class GenerateQuizSerializer(serializers.Serializer):
@@ -16,3 +16,17 @@ class RetrieveQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ("name", "possible_answers")
+
+
+class SaveAnswerSerializer(serializers.ModelSerializer):
+    user_answer = serializers.CharField(source='name')
+
+    class Meta:
+        model = Answer
+        fields = ('user_answer',)
+
+
+class PopularQuizTopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizTopic
+        fields = ("name",)
