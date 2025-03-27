@@ -156,33 +156,62 @@ If the user requests multiple-choice options:
 
 ---
 
-So what should you do is that to create design for that back end application, 
-using Javascript, Html, CSS ... (I need Front-End APP)
+# Front-End
 
-So I will tell you how pages should look alike: On the first page where prompt will be displayed (to generate quiz)
-the first thing you should do is to if user is not authenticated you should redirect them to log in page to actually authorize.
-next thing you should do is to send GET request to 'have_already_generated_quiz/' api endpoint
-to figure out if user has already generated quiz and hasn't finished his quiz.
-If user has unfinished quiz you should display something like pop up window to inform
-user if he wants to continue that unfinished quiz or not.
-So if user wants to continue his generated quiz you should send GET request
-to 'get_question_id' which returns the question id of where user had to answer it but due to some reason he exit from that quiz
-In case user want to generate a new quiz, you should send POST request to
-'delete_user_quiz' api endpoint to delete user's generated questions and answers
-and after that user can
-prompt quiz topic to generate quiz with its questions and possible answers.
-so When user enters prompt in case it's successfull and passes all the validation
-on that page should be created something alike button which redirect user to actual quiz question (That's means that quiz has started)
-When user will be redirected to first question (Which I return id of the first question)
-the url of that page should not be dynamic (Back End side will be dynamic like questions/pk)
-But I don't want to be dynamic url on the front end side. So URL
-should look like something like that: e.g (quiz/) 
-So it should be front-end responsibility to get next question id by adding +1 to the current question id.
-So If '/questions/<pk>/' endpoint returns 'End of quiz' message that means that quiz has ended to that user
-and you should send POST request to compute_quiz/ api endpoint. which will
-evaluate the result of user. Also for statistic's sake I have endpoint
-which computes Top 5 most frequently generated topics and you can display it
-on prompt page (where user generates quizzes)
+This is the front-end for the Quiz Generator application, built with HTML, CSS, and JavaScript. It communicates with a Django backend API using CORS and JWT authentication. The front-end was developed with the assistance of **Grok**, an AI created by **xAI**, which provided guidance, code generation, and design suggestions throughout the process.
 
 
+### To run the Front-End, you need:
+- **Node.js** and **npm** installed on your system. Download them from [nodejs.org](https://nodejs.org/) if you don’t have them.
+- A running Django backend at `http://localhost:8000`.
 
+## Starting the Live Server
+
+`live-server` is a lightweight development server that automatically reloads the page when files change. Follow these steps to start it:
+
+### 1. Install `live-server` Globally
+Open your terminal (Command Prompt, PowerShell, or any shell) and run:
+```bash
+npm install -g live-server
+```
+
+
+### 2. Navigate to the frontend/ Directory
+```bash
+cd frontend/
+```
+
+### 3. Start the Live Server
+Run the following command to start live-server on port 3000:
+```bash
+live-server --port=3000
+```
+
+## Here is the instruction of how I built front-end application with the help of **Grok**:
+
+`So what should you do is that to create design for that back end application, 
+ using Javascript, Html, CSS ... (I need Front-End APP)
+ So I will tell you how pages should look alike: On the first page where prompt will be displayed (to generate quiz)
+ the first thing you should do is to if user is not authenticated you should redirect them to log in page to actually authorize.
+ next thing you should do is to send GET request to 'have_already_generated_quiz/' api endpoint
+ to figure out if user has already generated quiz and hasn't finished his quiz.
+ If user has unfinished quiz you should display something like pop up window to inform
+ user if he wants to continue that unfinished quiz or not.
+ So if user wants to continue his generated quiz you should send GET request
+ to 'get_question_id' which returns the question id of where user had to answer it but due to some reason he exit from that quiz
+ In case user want to generate a new quiz, you should send POST request to
+ 'delete_user_quiz' api endpoint to delete user's generated questions and answers
+ and after that user can
+ prompt quiz topic to generate quiz with its questions and possible answers.
+ so When user enters prompt in case it's successfull and passes all the validation
+ on that page should be created something alike button which redirect user to actual quiz question (That's means that quiz has started)
+ When user will be redirected to first question (Which I return id of the first question)
+ the url of that page should not be dynamic (Back End side will be dynamic like questions/pk)
+ But I don't want to be dynamic url on the front end side. So URL
+ should look like something like that: e.g (quiz/) 
+ So it should be front-end responsibility to get next question id by adding +1 to the current question id.
+ So If '/questions/<pk>/' endpoint returns 'End of quiz' message that means that quiz has ended to that user
+ and you should send POST request to compute_quiz/ api endpoint. which will
+ evaluate the result of user. Also for statistic's sake I have endpoint
+ which computes Top 5 most frequently generated topics and you can display it
+ on prompt page (where user generates quizzes)`
