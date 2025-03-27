@@ -1,0 +1,138 @@
+/* Reset for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+/* Main wrapper for index page layout */
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Centered container for prompt, login, and quiz */
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Prompt, login, and quiz inner containers */
+.prompt-container, .login-container, .quiz-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Popup styling */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+    text-align: center;
+}
+
+.popup button {
+    margin: 5px;
+}
+
+/* Popular topics aside */
+.popular-topics {
+    width: 250px;
+    background: #fff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.popular-topics h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.popular-topics ul {
+    list-style: none;
+    padding: 0;
+}
+
+.popular-topics li {
+    padding: 8px;
+    color: #555;
+    border-bottom: 1px solid #eee;
+}
+
+.popular-topics li:last-child {
+    border-bottom: none;
+}
+
+/* Quiz-specific styling */
+.question {
+    margin: 20px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.answer-btn {
+    width: auto;
+    margin: 5px;
+    display: inline-block;
+    padding: 10px 15px; /* Slightly larger for better click area */
+    background-color: #007BFF; /* Default light gray */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.answer-btn:hover {
+    background-color: #eb5757; /* Slightly darker on hover */
+}
+
+.answer-btn.selected {
+    background-color: #ff4d4d; /* Red when selected */
+    color: white;
+    border-color: #cc0000;
+}

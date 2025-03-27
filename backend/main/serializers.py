@@ -23,7 +23,7 @@ class SaveAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('user_answer',)
+        fields = ('user_answer', 'question')
 
 
 class PopularQuizTopicSerializer(serializers.ModelSerializer):

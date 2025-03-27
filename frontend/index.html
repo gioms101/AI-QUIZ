@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <aside class="popular-topics">
+            <h2>Popular Topics</h2>
+            <ul id="popularTopicsList"></ul>
+        </aside>
+        <main class="centered-container">
+            <div class="prompt-container">
+                <h1>Generate a Quiz</h1>
+                <input type="text" id="quizPrompt" placeholder="Enter a quiz topic...">
+                <button onclick="generateQuiz()">Generate Quiz</button>
+                <div id="startQuizBtn" style="display: none;">
+                    <button onclick="startQuiz()">Start Quiz</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="popup" class="popup">
+        <p>You have an unfinished quiz. Continue?</p>
+        <button onclick="continueQuiz()">Yes</button>
+        <button onclick="deleteAndNewQuiz()">No, Start New</button>
+    </div>
+    <script src="./js/script.js"></script>
+</body>
+</html>

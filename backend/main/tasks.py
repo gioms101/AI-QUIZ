@@ -16,4 +16,3 @@ def count_topics(topic_name):
 @shared_task
 def delete_generated_quiz(user_id):
     Question.objects.filter(user_id=user_id).delete()
-    Answer.objects.filter(user_id=user_id).delete()

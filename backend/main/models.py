@@ -7,6 +7,7 @@ from django.db import models
 class Question(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
+    is_answered = models.BooleanField(default=False)
 
 
 class PossibleAnswer(models.Model):
@@ -18,6 +19,7 @@ class PossibleAnswer(models.Model):
 class Answer(models.Model):
     name = models.CharField(max_length=300)  # User Answer
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="answers")
+    question = models.OneToOneField(Question, on_delete=models.CASCADE)
 
 
 class QuizTopic(models.Model):

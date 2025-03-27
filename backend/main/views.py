@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, CreateAPIView, ListAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Question, PossibleAnswer, QuizTopic
@@ -84,7 +84,7 @@ class RetrieveQuestionAPIView(GenericAPIView):
             quest_obj = quest_obj.first()
             serializer = self.get_serializer(quest_obj)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({"Message": "End of Quiz"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "End of Quiz"}, status=status.HTTP_200_OK)
 
 
 class SaveUserAnswerAPIView(CreateAPIView):
@@ -126,10 +126,10 @@ class ComputeQuizResult(GenericAPIView):
     def post(self, request, *args, **kwargs):
         user = User.objects.prefetch_related("questions", "answers").get(id=request.user.id)
         user_questions, user_answers = ([
-                                        quest.name for quest in user.questions.all()
+                                            quest.name for quest in user.questions.all()
                                         ],
                                         [
-                                        answer.name for answer in user.answers.all()
+                                            answer.name for answer in user.answers.all()
                                         ])
         generated_result = QuizGenerator.compute_quiz_result(user_questions, user_answers)
         try:
@@ -150,3 +150,26 @@ class PopularQuizTopics(ListAPIView):
     """
     queryset = QuizTopic.objects.all().order_by("-asked")[:5]
     serializer_class = PopularQuizTopicSerializer
+
+
+class HaveAlreadyGeneratedQuiz(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"has_unfinished_quiz": request.user.questions.all().exists()})
+
+
+class DeleteGeneratedQuiz(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        Question.objects.filter(user_id=request.user.id).delete()
+        return Response({"message": "Deleted Successfully!"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ReturnToUnfinishedQuiz(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"question_id": Question.objects.filter(is_answered=False).first().id})
+
